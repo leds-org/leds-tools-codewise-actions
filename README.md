@@ -10,6 +10,7 @@ To use this action in your repository, follow the steps below:
 2. Ensure you have the following secrets added to your repository:
     * OPENAI_API_KEY: Your OpenAI API key to send requests for code analysis.
     * DISCORD_WEBHOOK_URL: A Discord webhook URL where the analysis results will be sent.
+    * AGENTOPS_API_KEY: API KEY FROM AGENT OPS.
 3. Ensure your project has the necessary dependencies:
     * Python 3.x
     * jq installed for JSON manipulation.

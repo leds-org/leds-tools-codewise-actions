@@ -1,9 +1,9 @@
 name: GPT Suggestions
 
 on:
-  push:
-    branches:
-      - main
+    pull_request:  # Executa apenas quando há um Pull Request
+      branches:
+        - developing  # Define a branch 'developing'
 
 jobs:
   suggest-improvements:
@@ -128,10 +128,27 @@ jobs:
                 curl -s -H "Content-Type: application/json" \
                 -d "$DISCORD_MESSAGE" \
                 "$DISCORD_WEBHOOK_URL"
+            
+                # Save suggestions to an environment variable for the next step
+                echo "SUGGESTIONS<<EOF" >> $GITHUB_ENV
+                echo "$SUGGESTIONS" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+
             done
           else
             echo "No code files found."
           fi
+    
+      - name: Comment on Pull Request
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Token para autenticar a API do GitHub
+        run: |
+            COMMENT_BODY="Code suggestions:\n\`\`\`${{ env.SUGGESTIONS }}\`\`\`"
+            PR_NUMBER=$(echo ${{ github.event.pull_request.number }})
+            curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "{\"body\": \"$COMMENT_BODY\"}"
       - name: Stop AgentOps Monitoring
         run: |
           python -c "import agentops; agentops.end_session('Success')"
