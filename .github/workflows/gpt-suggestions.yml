@@ -22,6 +22,16 @@ jobs:
         run: |
           sudo apt-get install jq
           pip install requests
+      - name: Install AgentOps CLI
+        run: |
+          curl -s https://cli.agentops.io/install.sh | bash
+          echo 'export PATH=$PATH:/home/runner/.agentops/bin' >> $GITHUB_ENV
+
+      - name: Start AgentOps Monitoring
+        env:
+          AGENTOPS_API_KEY: ${{ secrets.AGENTOPS_API_KEY }}
+        run: |
+          agentops start --api-key $AGENTOPS_API_KEY --project GPT-Suggestions
 
       - name: Get committer's name
         id: get-committer
@@ -122,3 +132,6 @@ jobs:
           else
             echo "No code files found."
           fi
+      - name: Stop AgentOps Monitoring
+        run: |
+          agentops stop
