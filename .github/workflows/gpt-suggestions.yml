@@ -49,9 +49,10 @@ jobs:
               echo "Analyzing the file: $FILE"
               CONTENT=$(cat "$FILE")
 
-               # Print the content being sent for analysis
-              echo "Content sent for analysis: "
-              echo "$CONTENT"
+              # Print the content being sent for analysis
+              #echo "Content sent for analysis: "
+              #echo "$CONTENT"
+              
               # Determine the language based on the file extension
               case "$FILE" in
                 *.py) LANG="python" ;;
@@ -66,9 +67,11 @@ jobs:
                 *.cs) LANG="csharp" ;;
                 *) LANG="plaintext" ;;  # Default for unknown file types
               esac
+              
               REQUEST="Analyze the following '$LANG' code for performance improvements and code smells. Limit your feedback to 20 lines of concise suggestions:\n\n$CONTENT"
-              echo "Request being sent to GPT API:"
-              echo "$REQUEST"
+              #echo "Request being sent to GPT API:"
+              #echo "$REQUEST"
+              
               # Send the file content to the GPT API for performance and code smells analysis
               RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
               -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -80,7 +83,8 @@ jobs:
                   {"role": "user", "content": "'"$REQUEST"'"}
                 ]
               }')
-
+              echo "Response from GPT API:"
+              echo "$RESPONSE"
               # Parse the response and check if it contains useful suggestions
               MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content')
 
