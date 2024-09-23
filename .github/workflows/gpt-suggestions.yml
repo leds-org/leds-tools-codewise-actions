@@ -134,4 +134,4 @@ jobs:
           fi
       - name: Stop AgentOps Monitoring
         run: |
-          agentops.end_session('Success')
+          python -c "import agentops; agentops.end_session('Success')"
