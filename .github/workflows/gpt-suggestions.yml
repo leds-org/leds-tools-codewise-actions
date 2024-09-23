@@ -49,6 +49,9 @@ jobs:
               echo "Analyzing the file: $FILE"
               CONTENT=$(cat "$FILE")
 
+               # Print the content being sent for analysis
+              echo "Content sent for analysis: "
+              echo "$CONTENT"
               # Determine the language based on the file extension
               case "$FILE" in
                 *.py) LANG="python" ;;
