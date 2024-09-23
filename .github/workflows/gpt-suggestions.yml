@@ -134,4 +134,4 @@ jobs:
           fi
       - name: Stop AgentOps Monitoring
         run: |
-          agentops.end_session("Success")
+          agentops.end_session('Success')
