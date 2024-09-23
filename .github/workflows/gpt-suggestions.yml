@@ -35,7 +35,14 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           # Get the list of modified code files
-          FILES=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|c|cpp|go|rb|php|cs)$')
+          # Check if it's the first commit in the repository
+          if [ $(git rev-list --count HEAD) -eq 1 ]; then
+            # First commit: compare with the empty tree
+            FILES=$(git diff --name-only 4b825dc642cb6eb9a060e54bf8d69288fbee4904 HEAD | grep -E '\.(py|js|ts|java|c|cpp|go|rb|php|cs)$')
+          else
+            # Subsequent commits: compare with the previous commit (HEAD^)
+            FILES=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|c|cpp|go|rb|php|cs)$')
+          fi
 
           # Check if there are any code files
           if [ -n "$FILES" ]; then
