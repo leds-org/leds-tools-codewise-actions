@@ -34,7 +34,6 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          # Get the list of modified code files
           # Check if it's the first commit in the repository
           if [ $(git rev-list --count HEAD) -eq 1 ]; then
             # First commit: compare with the empty tree
@@ -72,17 +71,26 @@ jobs:
               -d '{
                 "model": "gpt-4",
                 "messages": [
-                  {"role": "user", "content": "Please review this '"$LANG"' code for performance improvements and code smells: '"$CONTENT"'. Limit the suggestions to 20 lines."}
+                  {"role": "system", "content": "You are a code analysis assistant focused on performance and code quality."},
+                  {"role": "user", "content": "Analyze the following '"$LANG"' code for performance improvements and code smells. Limit your feedback to 20 lines of concise suggestions:\n\n'"$CONTENT"'"}
                 ],
                 "max_tokens": 300
               }')
 
+              # Parse the response and check if it contains useful suggestions
               MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content')
 
-              # Send message to Discord for each analyzed file as a separate message
-              curl -X POST -H "Content-Type: application/json" -d '{
-                "content": "**Code suggestions for:** `'"$FILE"'`\n**Committer:** '"$COMMITTER_NAME"'\n**Suggestions (Performance, Code Smells):**\n```'"$LANG"'\n'"$MESSAGE"'\n```"
-              }' $DISCORD_WEBHOOK_URL
+              if [ "$MESSAGE" != "null" ] && [ -n "$MESSAGE" ]; then
+                # Send message to Discord for each analyzed file as a separate message
+                curl -X POST -H "Content-Type: application/json" -d '{
+                  "content": "**Code suggestions for:** `'"$FILE"'`\n**Committer:** '"$COMMITTER_NAME"'\n**Suggestions (Performance, Code Smells):**\n```'"$LANG"'\n'"$MESSAGE"'\n```"
+                }' $DISCORD_WEBHOOK_URL
+              else
+                # Handle case when no suggestions were found
+                curl -X POST -H "Content-Type: application/json" -d '{
+                  "content": "**Code suggestions for:** `'"$FILE"'`\n**Committer:** '"$COMMITTER_NAME"'\n**Suggestions (Performance, Code Smells):**\n```No significant issues found for this file.```"
+                }' $DISCORD_WEBHOOK_URL
+              fi
             done
           else
             echo "No code files found."
