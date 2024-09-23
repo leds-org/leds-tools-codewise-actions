@@ -1,0 +1,82 @@
+name: GPT Suggestions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  suggest-improvements:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install jq
+          pip install requests
+
+      - name: Get committer's name
+        id: get-committer
+        run: |
+          COMMITTER_NAME=$(git log -1 --pretty=format:'%an')
+          echo "COMMITTER_NAME=$COMMITTER_NAME" >> $GITHUB_ENV
+
+      - name: Check for code files and send to GPT
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          # Get the list of modified code files
+          FILES=$(git diff --name-only HEAD^ HEAD | grep -E '\.(py|js|ts|java|c|cpp|go|rb|php|cs)$')
+
+          # Check if there are any code files
+          if [ -n "$FILES" ]; then
+            for FILE in $FILES; do
+              echo "Analyzing the file: $FILE"
+              CONTENT=$(cat "$FILE")
+
+              # Determine the language based on the file extension
+              case "$FILE" in
+                *.py) LANG="python" ;;
+                *.js) LANG="javascript" ;;
+                *.ts) LANG="typescript" ;;
+                *.java) LANG="java" ;;
+                *.c) LANG="c" ;;
+                *.cpp) LANG="cpp" ;;
+                *.go) LANG="go" ;;
+                *.rb) LANG="ruby" ;;
+                *.php) LANG="php" ;;
+                *.cs) LANG="csharp" ;;
+                *) LANG="plaintext" ;;  # Default for unknown file types
+              esac
+
+              # Send the file content to the GPT API for performance and code smells analysis
+              RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+              -H "Authorization: Bearer $OPENAI_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "model": "gpt-4",
+                "messages": [
+                  {"role": "user", "content": "Please review this '"$LANG"' code for performance improvements and code smells: '"$CONTENT"'. Limit the suggestions to 20 lines."}
+                ],
+                "max_tokens": 300
+              }')
+
+              MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content')
+
+              # Send message to Discord for each analyzed file as a separate message
+              curl -X POST -H "Content-Type: application/json" -d '{
+                "content": "**Code suggestions for:** `'"$FILE"'`\n**Committer:** '"$COMMITTER_NAME"'\n**Suggestions (Performance, Code Smells):**\n```'"$LANG"'\n'"$MESSAGE"'\n```"
+              }' $DISCORD_WEBHOOK_URL
+            done
+          else
+            echo "No code files found."
+          fi
