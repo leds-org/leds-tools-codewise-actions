@@ -141,14 +141,14 @@ jobs:
     
       - name: Comment on Pull Request
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Token para autenticar a API do GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Token para autenticar a API do GitHub
         run: |
-            COMMENT_BODY="Code suggestions:\n\ comentário do GPT 2 \n"
-            PR_NUMBER=$(echo ${{ github.event.pull_request.number }})
-            curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d "{\"body\": \"$COMMENT_BODY\"}"
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          COMMENT_BODY="Code suggestions:\n\nComentário do GPT 2\n"
+          curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{\"body\": \"$COMMENT_BODY\"}"      
       - name: Stop AgentOps Monitoring
         run: |
           python -c "import agentops; agentops.end_session('Success')"
