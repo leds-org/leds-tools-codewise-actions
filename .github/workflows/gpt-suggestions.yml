@@ -78,8 +78,7 @@ jobs:
                 "messages": [
                   {"role": "system", "content": "You are a code analysis assistant focused on performance and code quality."},
                   {"role": "user", "content": "'"$REQUEST"'"}
-                ],
-                "max_tokens": 300
+                ]
               }')
 
               # Parse the response and check if it contains useful suggestions
