@@ -30,9 +30,8 @@ jobs:
         run: |
             python -c "
             import agentops
-            agentops.init("$AGENTOPS_API_KEY", default_tags=["leds-wise"])
-            
-                        "
+            agentops.init($AGENTOPS_API_KEY)
+            "
                 
       - name: Get committer's name
         id: get-committer
