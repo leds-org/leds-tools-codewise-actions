@@ -22,20 +22,18 @@ jobs:
         run: |
           sudo apt-get install jq
           pip install requests
+          pip install agentops  
       
-      - name: Install AgentOps CLI
-        run: |
-            curl -s https://cli.agentops.io/install.sh | bash
-            echo 'export PATH=$PATH:$HOME/.agentops/bin' >> $GITHUB_ENV
-            source $GITHUB_ENV
-            agentops --version  # Verificar se a CLI foi instalada corretament
-
-      - name: Start AgentOps Monitoring
+      - name: Run AgentOps Monitoring
         env:
-          AGENTOPS_API_KEY: ${{ secrets.AGENTOPS_API_KEY }}
+            AGENTOPS_API_KEY: ${{ secrets.AGENTOPS_API_KEY }}
         run: |
-          agentops start --api-key $AGENTOPS_API_KEY --project GPT-Suggestions
-
+            python -c "
+            import agentops
+            agentops.init($AGENTOPS_API_KEY, default_tags=["leds-wise"])
+            
+                        "
+                
       - name: Get committer's name
         id: get-committer
         run: |
@@ -137,4 +135,4 @@ jobs:
           fi
       - name: Stop AgentOps Monitoring
         run: |
-          agentops stop
+          agentops.end_session("Success")
