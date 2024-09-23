@@ -5,10 +5,10 @@ def example_function():
         result.append(i * 2)  # Inefficient use of list append in a loop
     
     return result
+
+
 # colocando um comentário
 def unused_function():
     # Unused code example (code smell)
     return "This function is never called"
-
-## mais um comentário fiz mais uma coisa para o developing dsdsd
 print(example_function())
