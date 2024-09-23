@@ -5,9 +5,11 @@ def example_function():
         result.append(i * 2)  # Inefficient use of list append in a loop
     
     return result
+
+
 # colocando um comentário
 def unused_function():
     # Unused code example (code smell)
     return "This function is never called"
-
+## Testing
 print(example_function())
