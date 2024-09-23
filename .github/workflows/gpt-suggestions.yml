@@ -148,8 +148,7 @@ jobs:
           curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"body\": \"$COMMENT_BODY\"}"
-      
+            -d "{\"body\": \"$COMMENT_BODY\"}"      
       - name: Stop AgentOps Monitoring
         run: |
           python -c "import agentops; agentops.end_session('Success')"
