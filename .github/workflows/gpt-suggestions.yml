@@ -22,10 +22,13 @@ jobs:
         run: |
           sudo apt-get install jq
           pip install requests
+      
       - name: Install AgentOps CLI
         run: |
-          curl -s https://cli.agentops.io/install.sh | bash
-          echo 'export PATH=$PATH:/home/runner/.agentops/bin' >> $GITHUB_ENV
+            curl -s https://cli.agentops.io/install.sh | bash
+            echo 'export PATH=$PATH:$HOME/.agentops/bin' >> $GITHUB_ENV
+            source $GITHUB_ENV
+            agentops --version  # Verificar se a CLI foi instalada corretament
 
       - name: Start AgentOps Monitoring
         env:
