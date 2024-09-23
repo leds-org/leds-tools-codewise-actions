@@ -106,11 +106,17 @@ jobs:
                 echo "$SUGGESTIONS"
 
                 # Prepare the message for Discord (escaping necessary characters)
-                DISCORD_MESSAGE="Code suggestions for: \`$FILE\`\nCommitter: $(git log -1 --pretty=format:'%an')\nSuggestions (Performance, Code Smells):\n\`\`\`$SUGGESTIONS\`\`\`"
+                DISCORD_MESSAGE=$(jq -n \
+                    --arg file "$FILE" \
+                    --arg committer "$(git log -1 --pretty=format:'%an')" \
+                    --arg suggestions "$SUGGESTIONS" \
+                    '{
+                    content: "Code suggestions for: \($file)\nCommitter: \($committer)\nSuggestions (Performance, Code Smells):\n``` \($suggestions) ```"
+                    }')
 
                 # Send the message to Discord webhook
                 curl -s -H "Content-Type: application/json" \
-                -d "{\"content\": \"$DISCORD_MESSAGE\"}" \
+                -d "$DISCORD_MESSAGE" \
                 "$DISCORD_WEBHOOK_URL"
             done
           else
