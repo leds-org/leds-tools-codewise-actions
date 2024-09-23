@@ -9,5 +9,5 @@ def example_function():
 def unused_function():
     # Unused code example (code smell)
     return "This function is never called"
-
+## mais um comentário
 print(example_function())
