@@ -80,7 +80,7 @@ jobs:
                 *) LANG="plaintext" ;;  # Default for unknown file types
               esac
               
-              REQUEST="Analyze the following '$LANG' code for performance improvements and code smells. Limit your feedback to 20 lines of concise suggestions:\n\n$CONTENT"
+              REQUEST="Analyze the following '$LANG' code for performance improvements and code smells. Limit your feedback to 20 lines of concise suggestions to write a issue comment:\n\n$CONTENT"
               #echo "Request being sent to GPT API:"
               #echo "$REQUEST"
 
