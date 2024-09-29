@@ -80,7 +80,7 @@ jobs:
                 *) LANG="plaintext" ;;  # Default for unknown file types
               esac
               
-              REQUEST="Analyze the following '$LANG' code for performance improvements and code smells. Limit your feedback to 20 lines of concise suggestions to write a issue comment:\n\n$CONTENT"
+              REQUEST="Analyze the following '$LANG' code for performance improvements and code smells. Limit your feedback to 20 lines of concise suggestions:\n\n$CONTENT"
               #echo "Request being sent to GPT API:"
               #echo "$REQUEST"
 
@@ -133,7 +133,7 @@ jobs:
             
               # Save suggestions to an environment variable for the next step
                 echo "SUGGESTIONS<<EOF" >> $GITHUB_ENV
-                echo "$SUGGESTIONS" >> $GITHUB_ENV
+                echo "$FILE: $SUGGESTIONS" >> $GITHUB_ENV
                 echo "EOF" >> $GITHUB_ENV
 
             done
@@ -145,7 +145,9 @@ jobs:
         env:
           SUGGESTIONS: ${{ env.SUGGESTIONS }}  # Carregar as sugestões do ambiente
         run: |
+          
           ESCAPED_SUGGESTIONS=$(echo "$SUGGESTIONS" | jq -Rsa .)
+
           curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${{github.event.pull_request.number}}/comments" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
