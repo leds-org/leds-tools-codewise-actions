@@ -145,11 +145,12 @@ jobs:
         env:
           SUGGESTIONS: ${{ env.SUGGESTIONS }}  # Carregar as sugestões do ambiente
         run: |
+          ESCAPED_SUGGESTIONS=$(echo "$SUGGESTIONS" | jq -Rsa .)
           curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${{github.event.pull_request.number}}/comments" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d "{\"body\": \"Code suggestions:\n\n${SUGGESTIONS}\"}"
+            -d "{\"body\": \"Code suggestions:\n\n${ESCAPED_SUGGESTIONS}\"}"
 
       - name: Stop AgentOps Monitoring
         run: |
