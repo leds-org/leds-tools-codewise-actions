@@ -5,6 +5,10 @@ on:
       branches:
         - developing  # Define a branch 'developing'
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   suggest-improvements:
     runs-on: ubuntu-latest
