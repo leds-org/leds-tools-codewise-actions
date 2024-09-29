@@ -1,5 +1,8 @@
 name: Code Wise
-
+permissions:
+  issues: write
+  pull-requests: write
+  
 on:
     pull_request:  # Executa apenas quando há um Pull Request
       branches:
