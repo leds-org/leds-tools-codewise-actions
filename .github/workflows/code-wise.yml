@@ -1,12 +1,13 @@
 name: Code Wise
-permissions:
-  issues: write
-  pull-requests: write
-  
+
 on:
     pull_request:  # Executa apenas quando há um Pull Request
       branches:
         - developing  # Define a branch 'developing'
+
+permissions:
+  issues: write
+  pull-requests: write
 
 jobs:
   suggest-improvements:
