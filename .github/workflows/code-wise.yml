@@ -112,6 +112,7 @@ jobs:
               echo "$RESPONSE"
               
               SUGGESTIONS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+              ALL_SUGGESTIONS+="$FILE:\n$SUGGESTIONS\n\n"
 
               # Print the response from the GPT API
               echo "Response from GPT API:"
@@ -132,8 +133,8 @@ jobs:
                 "$DISCORD_WEBHOOK_URL"
             
               # Save suggestions to an environment variable for the next step
-                echo "SUGGESTIONS<<EOF" >> $GITHUB_ENV
-                echo "$FILE: $SUGGESTIONS" >> $GITHUB_ENV
+                echo "ALL_SUGGESTIONS<<EOF" >> $GITHUB_ENV
+                echo -e "$ALL_SUGGESTIONS" >> $GITHUB_ENV
                 echo "EOF" >> $GITHUB_ENV
 
             done
@@ -146,7 +147,7 @@ jobs:
           SUGGESTIONS: ${{ env.SUGGESTIONS }}  # Carregar as sugestões do ambiente
         run: |
           
-          ESCAPED_SUGGESTIONS=$(echo "$SUGGESTIONS" | jq -Rsa .)
+          ESCAPED_SUGGESTIONS=$(echo "$ALL_SUGGESTIONS" | jq -Rsa .)
 
           curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${{github.event.pull_request.number}}/comments" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
