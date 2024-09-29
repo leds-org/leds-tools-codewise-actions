@@ -150,7 +150,7 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d "{\"body\": \"Code suggestions:\n\n${ESCAPED_SUGGESTIONS}\"}"
+            -d "{\"body\": ${ESCAPED_SUGGESTIONS}}"
 
       - name: Stop AgentOps Monitoring
         run: |
