@@ -5,9 +5,7 @@ on:
       branches:
         - developing  # Define a branch 'developing'
 
-permissions:
-  issues: write
-  pull-requests: write
+permissions: write-all
 
 jobs:
   suggest-improvements:
