@@ -146,7 +146,7 @@ jobs:
           PR_NUMBER=${{ github.event.pull_request.number }}
           COMMENT_BODY="Code suggestions:\\n\\nComentário do GPT 4\\n"
           curl -s -X POST "https://api.github.com/repos/${{ github.repository_owner}}/${{ github.repository }}/issues/${{github.event.pull_request.number}}/comments" \
-            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d "{\"body\": \"$COMMENT_BODY\"}"
       
