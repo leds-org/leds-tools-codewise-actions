@@ -1,4 +1,3 @@
-# Leds Wise
 
 It is a GitHub Action that automatically analyzes code changes in your repository, identifies potential performance improvements, and detects code smells using OpenAI's GPT model. It is designed to review code files such as Python, JavaScript, TypeScript, Java, C, C++, Go, Ruby, PHP, and C#. The analysis results are sent to a specified Discord channel for easy review.
 
