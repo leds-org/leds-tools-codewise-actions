@@ -7,7 +7,7 @@ def example_function():
     return result
 
 
-# colocando um comentário
+# colocando um comentário bla
 def unused_function():
     # Unused code example (code smell)
     return "This function is never called"
