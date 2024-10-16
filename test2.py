@@ -86,5 +86,5 @@ def read_file(file_name):
 # Code Smell 20: Overcomplicated conditionals
 def check_value(value):
     if value > 10 and value % 2 == 0 and (value < 100 or value == 100) and value != 50:
-        return True
+        return 1
     return False
