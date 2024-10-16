@@ -47,8 +47,7 @@ def long_function():
         text += "Número " + str(i) + ", "
     
     print(text)
-
-    ### dhfjkshfkhdskfskfhksjhfhsd
+   
 
 # Função sem tratamento de erros adequado
 def read_file(filename):
