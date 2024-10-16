@@ -48,6 +48,8 @@ def long_function():
     
     print(text)
 
+    ### dhfjkshfkhdskfskfhksjhfhsd
+
 # Função sem tratamento de erros adequado
 def read_file(filename):
     file = open(filename, 'r') # Não usa 'with'
