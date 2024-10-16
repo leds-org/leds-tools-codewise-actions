@@ -40,9 +40,9 @@ def long_function():
             print("Número não divisível por 3:", i)
     
     process_data()
-    
+    ################################
     # Concatenação de strings ineficiente
-    text = ""
+    text = 123
     for i in range(10):
         text += "Número " + str(i) + ", "
     
